@@ -15,14 +15,17 @@ class Counters extends React.Component {
         <button onClick={onReset} className="btn btn-primary btn-small m-2">
           Reset
         </button>
+
         {counters.map((counter) => (
-          <Counter
-            key={counter.id}
-            counter={counter}
-            onDelete={onDelete}
-            onIncrement={onIncrement}
-            onDecrement={onDecrement}
-          />
+          <div className="row-sm">
+            <Counter
+              key={counter.id}
+              counter={counter}
+              onDelete={onDelete}
+              onIncrement={onIncrement}
+              onDecrement={onDecrement}
+            />
+          </div>
         ))}
       </div>
     );
