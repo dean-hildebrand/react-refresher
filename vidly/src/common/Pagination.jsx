@@ -1,24 +1,28 @@
 import React from "react";
-import _ from "loadash";
+import _ from "lodash";
 
 const Pagination = (props) => {
-  const { itemsCount, pageSize } = props;
+  const { itemsCount, pageSize, currentPage, onPageChange } = props;
+  console.log(currentPage);
+  // figures out how many pages needed by dividing number of items with pages
+  const pagesCount = Math.ceil(itemsCount / pageSize);
+  if (pagesCount === 1) return null;
+  const pages = _.range(1, pagesCount + 1);
 
-  //   const pagesCount = itemsCount / pageSize;
-  //   const pages = _.range(1, pagesCount + 1);
-  //   console.log(pages);
   return (
-    <nav aria-label="Page navigation example">
+    <nav>
       <ul className="pagination">
-        <li className="page-item">
-          <a className="page-link">1</a>
-        </li>
-        <li className="page-item">
-          <a className="page-link">2</a>
-        </li>
-        <li className="page-item">
-          <a className="page-link">3</a>
-        </li>
+        {pages.map((page) => (
+          <li
+            key={page}
+            //dynamically highlights current page on click
+            className={page === currentPage ? "page-item active" : "page-item"}
+          >
+            <a className="page-link" onClick={() => onPageChange(page)}>
+              {page}
+            </a>
+          </li>
+        ))}
       </ul>
     </nav>
   );
