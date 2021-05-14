@@ -8,12 +8,18 @@ import Genres from "./genres";
 
 export default class Movies extends Component {
   state = {
-    movies: getMovies(),
-    genres: getGenres(),
+    movies: [],
+    genres: [],
     selectedGenre: "",
     currentPage: 1,
     pageSize: 4,
   };
+
+  componentDidMount() {
+    const genres = [{ name: "All Genres" }, ...getGenres()];
+
+    this.setState({ movies: getMovies(), genres });
+  }
 
   handleDelete = (movie) => {
     const movies = this.state.movies.filter((m) => m._id !== movie._id);
@@ -37,8 +43,7 @@ export default class Movies extends Component {
   };
 
   handleGenreSelect = (genre) => {
-    this.setState({ selectedGenre: genre });
-    console.log(this.state.selectedGenre);
+    this.setState({ selectedGenre: genre, currentPage: 1 });
   };
 
   render() {
@@ -50,9 +55,14 @@ export default class Movies extends Component {
       selectedGenre,
     } = this.state;
 
-    if (count == 0) return <p>There are no movies in the database</p>;
+    if (count === 0) return <p>There are no movies in the database</p>;
 
-    const movies = paginate(allMovies, currentPage, pageSize);
+    const filteredMovies =
+      selectedGenre && selectedGenre._id
+        ? allMovies.filter((m) => m.genre._id === selectedGenre._id)
+        : allMovies;
+
+    const movies = paginate(filteredMovies, currentPage, pageSize);
 
     return (
       <div>
@@ -64,7 +74,7 @@ export default class Movies extends Component {
           />
 
           <div className="col">
-            <h3>There are {count} movies in your collection</h3>
+            <h3>There are {filteredMovies.length} movies in your collection</h3>
 
             <table className="table">
               <thead>
@@ -103,7 +113,7 @@ export default class Movies extends Component {
             </table>
 
             <Pagination
-              itemsCount={count}
+              itemsCount={filteredMovies.length}
               pageSize={pageSize}
               currentPage={currentPage}
               onPageChange={this.handlePageChange}
